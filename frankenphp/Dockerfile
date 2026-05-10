@@ -142,7 +142,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
 
-COPY files /
+COPY files/general /
+COPY files/frankenphp /
 
 FROM runtime AS builder
 

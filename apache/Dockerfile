@@ -138,7 +138,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
 
-COPY files /
+COPY files/general /
 
 FROM runtime AS builder
 
