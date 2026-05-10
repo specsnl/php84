@@ -138,7 +138,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
 
-COPY files /
+COPY files/general /
 
 FROM runtime AS builder
 
@@ -241,6 +241,7 @@ ARG TARGETARCH
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+ENV npm_config_cache="$XDG_CACHE_HOME/npm"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
