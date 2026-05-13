@@ -38,7 +38,7 @@ jobs:
       dockerfile: ${{ matrix.docker.dockerfile }}
 
   merge:
-    uses: specsnl/github-actions/.github/workflows/merge-php.yml@1.2.1
+    uses: specsnl/github-actions/.github/workflows/merge-php.yml@1.2.3
     needs: build
     strategy:
       matrix:
