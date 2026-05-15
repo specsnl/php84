@@ -2,7 +2,7 @@
 # check=error=true
 
 # Latest version of PHP base image: https://hub.docker.com/_/php/tags
-FROM php:8.4.20-apache-trixie AS runtime
+FROM php:8.4.21-apache-trixie AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
