@@ -153,7 +153,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Latest version of Phive: https://api.github.com/repos/phar-io/phive/releases/latest
 ARG PHIVE_VERSION=0.16.0
 # Latest version of Composer: https://getcomposer.org/download
-ARG COMPOSER_VERSION=2.9.7
+ARG COMPOSER_VERSION=2.9.8
 # Latest version of Xdebug: https://packagist.org/packages/xdebug/xdebug
 ARG XDEBUG_VERSION=3.5.1
 # Latest version of pcov: https://packagist.org/packages/pecl/pcov
