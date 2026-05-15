@@ -2,7 +2,7 @@
 # check=error=true
 
 # Latest version of FrankenPHP base image: https://hub.docker.com/r/dunglas/frankenphp/tags
-FROM dunglas/frankenphp:1.12.2-php8.4.20-trixie AS runtime
+FROM dunglas/frankenphp:1.12.2-php8.4.21-trixie AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
