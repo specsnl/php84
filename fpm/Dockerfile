@@ -30,7 +30,7 @@ ENV SMTPEHLO=localhost
 WORKDIR /var/www
 
 # Latest version of Pie: https://github.com/php/pie/releases
-COPY --from=ghcr.io/php/pie:1.4.1-bin /pie /usr/bin/pie
+COPY --from=ghcr.io/php/pie:1.4.4-bin /pie /usr/bin/pie
 
 RUN apt-get update \
     && apt-get install --assume-yes --no-install-recommends \
@@ -148,7 +148,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Latest version of Phive: https://api.github.com/repos/phar-io/phive/releases/latest
 ARG PHIVE_VERSION=0.16.0
 # Latest version of Composer: https://getcomposer.org/download
-ARG COMPOSER_VERSION=2.9.7
+ARG COMPOSER_VERSION=2.9.8
 # Latest version of Xdebug: https://packagist.org/packages/xdebug/xdebug
 ARG XDEBUG_VERSION=3.5.1
 # Latest version of pcov: https://packagist.org/packages/pecl/pcov
