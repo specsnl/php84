@@ -24,4 +24,4 @@ updates:
     groups:
       specsnl-github-actions:
         patterns:
-          - "specsnl/github-actions"
+          - "specsnl/github-actions*"
