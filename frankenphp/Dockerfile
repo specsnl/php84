@@ -155,7 +155,7 @@ ARG PHIVE_VERSION=0.16.0
 # Latest version of Composer: https://getcomposer.org/download
 ARG COMPOSER_VERSION=2.10.1
 # Latest version of Xdebug: https://packagist.org/packages/xdebug/xdebug
-ARG XDEBUG_VERSION=3.5.1
+ARG XDEBUG_VERSION=3.5.3
 # Latest version of pcov: https://packagist.org/packages/pecl/pcov
 ARG PCOV_VERSION=1.0.12
 
