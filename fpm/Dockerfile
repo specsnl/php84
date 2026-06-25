@@ -126,6 +126,7 @@ RUN curl -fsSLo /tmp/fixuid.tar.gz "https://github.com/boxboat/fixuid/releases/d
         "/data" \
         "/config" \
         "/cache/npm" \
+        "/cache/node" \
     && chown -R "$USER_UID":"$USER_GID" \
         "/data" \
         "/config" \
