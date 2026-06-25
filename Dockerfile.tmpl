@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# Latest version of PHP base image: https://hub.docker.com/_/php/tags
-FROM php:8.4.22-fpm-trixie AS runtime
+# Latest version of {{ .image_label }}: {{ .image_url }}
+FROM {{ getenv "BASE_IMAGE" }} AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -23,7 +23,11 @@ ARG PHP_IGBINARY_VERSION=3.2.17RC1
 ARG PHP_REDIS_VERSION=6.3.0
 # Latest version of amqp-extension: https://packagist.org/packages/php-amqp/php-amqp
 ARG PHP_AMQP_VERSION=2.2.0
-
+{{ if .is_frankenphp }}
+# Default to classic mode (no workers). To enable worker mode, set:
+# FRANKENPHP_CONFIG="worker /var/www/public/index.php"
+ENV FRANKENPHP_CONFIG=""
+{{ end }}
 WORKDIR /var/www
 
 RUN --mount=type=bind,from=mlocati/php-extension-installer:2.11.9,source=/usr/bin/install-php-extensions,target=/usr/local/bin/install-php-extensions \
@@ -60,7 +64,9 @@ RUN --mount=type=bind,from=mlocati/php-extension-installer:2.11.9,source=/usr/bi
     && rm -rf /tmp/*
 
 COPY files/general /
-
+{{ if .is_frankenphp -}}
+COPY files/frankenphp /
+{{ end }}
 FROM composer:2.10.1 AS composer
 
 FROM runtime AS builder

@@ -1,0 +1,3 @@
+image_label: PHP base image
+image_url: https://hub.docker.com/_/php/tags
+is_frankenphp: false

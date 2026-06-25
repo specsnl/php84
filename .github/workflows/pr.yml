@@ -13,7 +13,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check:
+    name: Dockerfiles match template
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Regenerate Dockerfiles
+        run: task generate
+
+      - name: Fail if generated files differ
+        run: git diff --exit-code fpm/Dockerfile apache/Dockerfile frankenphp/Dockerfile
+
   build:
+    needs: check
     uses: specsnl/github-actions/.github/workflows/build-php.yml@2.1.0
     strategy:
       fail-fast: false
