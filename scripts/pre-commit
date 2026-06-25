@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -e
+task generate
+git add fpm/Dockerfile apache/Dockerfile frankenphp/Dockerfile

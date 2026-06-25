@@ -5,6 +5,8 @@ vars:
   DOCKER_OWNER: specsnl
   # Latatest version of Hadolint: https://hub.docker.com/r/hadolint/hadolint/tags or https://github.com/hadolint/hadolint/releases
   HADOLINT_TAG_VERSION: v2.14.0
+  # Latest version of gomplate: https://hub.docker.com/r/hairyhenderson/gomplate/tags or https://github.com/hairyhenderson/gomplate/releases
+  GOMPLATE_TAG_VERSION: v5.1.0
 
 # env:
 #   BUILDKIT_PROGRESS: plain
@@ -131,6 +133,44 @@ tasks:
     cmds:
       - task: do:lint
         vars: { DOCKERFILE_PATH: frankenphp/Dockerfile }
+
+  generate:
+    desc: Generate all Dockerfiles from Dockerfile.tmpl
+    cmds:
+      - task: generate:variant
+        vars: { VARIANT: fpm }
+      - task: generate:variant
+        vars: { VARIANT: apache }
+      - task: generate:variant
+        vars: { VARIANT: frankenphp }
+
+  generate:variant:
+    internal: true
+    vars:
+      BASE_IMAGE:
+        sh: awk '/^FROM / && !found { print $2; found=1 }' {{.VARIANT}}/Dockerfile
+    cmds:
+      - docker run
+        --rm
+        --volume $(pwd)/Dockerfile.tmpl:/input/Dockerfile.tmpl:ro
+        --volume $(pwd)/variants/{{.VARIANT}}.yaml:/input/variant.yaml:ro
+        --env "BASE_IMAGE={{.BASE_IMAGE}}"
+        hairyhenderson/gomplate:{{.GOMPLATE_TAG_VERSION}}
+        --context .=file:///input/variant.yaml
+        --file /input/Dockerfile.tmpl
+        > {{.VARIANT}}/Dockerfile
+    requires:
+      vars: [VARIANT]
+
+  install:hooks:
+    desc: Install git hooks (pre-commit regenerates and stages Dockerfiles from template)
+    cmds:
+      - cp scripts/pre-commit .git/hooks/pre-commit
+
+  remove:hooks:
+    desc: Remove installed git hooks
+    cmds:
+      - rm -f .git/hooks/pre-commit
 
   do:lint:
     internal: true

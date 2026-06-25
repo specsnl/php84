@@ -1,0 +1,177 @@
+# syntax=docker/dockerfile:1
+# check=error=true
+
+# Latest version of {{ .image_label }}: {{ .image_url }}
+FROM {{ getenv "BASE_IMAGE" }} AS runtime
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG XDG_CONFIG_HOME=/config
+ENV XDG_CONFIG_HOME=$XDG_CONFIG_HOME
+
+ARG XDG_DATA_HOME=/data
+ENV XDG_DATA_HOME=$XDG_DATA_HOME
+
+ARG XDG_CACHE_HOME=/cache
+ENV XDG_CACHE_HOME=$XDG_CACHE_HOME
+
+# Latest version of event-extension: https://packagist.org/packages/osmanov/pecl-event
+ARG PHP_EVENT_VERSION=3.1.4
+# Latest version of igbinary-extension: https://packagist.org/packages/igbinary/igbinary
+ARG PHP_IGBINARY_VERSION=3.2.17RC1
+# Latest version of redis-extension: https://packagist.org/packages/phpredis/phpredis
+ARG PHP_REDIS_VERSION=6.3.0
+# Latest version of amqp-extension: https://packagist.org/packages/php-amqp/php-amqp
+ARG PHP_AMQP_VERSION=2.2.0
+{{ if .is_frankenphp }}
+# Default to classic mode (no workers). To enable worker mode, set:
+# FRANKENPHP_CONFIG="worker /var/www/public/index.php"
+ENV FRANKENPHP_CONFIG=""
+{{ end }}
+WORKDIR /var/www
+
+RUN --mount=type=bind,from=mlocati/php-extension-installer:2.11.9,source=/usr/bin/install-php-extensions,target=/usr/local/bin/install-php-extensions \
+    apt-get update \
+    && apt-get install --assume-yes --no-install-recommends \
+        apt-transport-https \
+        ca-certificates \
+        openssl \
+    && install-php-extensions \
+        pdo_mysql \
+        pdo_pgsql \
+        intl \
+        pcntl \
+        gd \
+        bcmath \
+        zip \
+        soap \
+        xsl \
+        sockets \
+        "event-$PHP_EVENT_VERSION" \
+        "igbinary-$PHP_IGBINARY_VERSION" \
+        "redis-$PHP_REDIS_VERSION" \
+        "amqp-$PHP_AMQP_VERSION" \
+    && cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && mkdir -p \
+        $XDG_CONFIG_HOME \
+        $XDG_DATA_HOME \
+        $XDG_CACHE_HOME \
+    && rm -rf /var/www/* \
+    # Cleanup
+    && apt-get autoremove --assume-yes \
+    && apt-get clean --assume-yes \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
+
+COPY files/general /
+{{ if .is_frankenphp -}}
+COPY files/frankenphp /
+{{ end }}
+FROM composer:2.10.1 AS composer
+
+FROM runtime AS builder
+
+ARG TARGETARCH
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Latest version of Xdebug: https://packagist.org/packages/xdebug/xdebug
+ARG XDEBUG_VERSION=3.5.3
+# Latest version of pcov: https://packagist.org/packages/pecl/pcov
+ARG PCOV_VERSION=1.0.12
+
+RUN --mount=type=bind,from=mlocati/php-extension-installer:2.11.9,source=/usr/bin/install-php-extensions,target=/usr/local/bin/install-php-extensions \
+    apt-get update \
+    && apt-get install --assume-yes --no-install-recommends \
+        vim \
+        git \
+        sqlite3 \
+        wait-for-it \
+        p7zip-full \
+        unzip \
+        curl \
+    # Download Composer keys
+    && mkdir -p "$XDG_CONFIG_HOME/composer" \
+    && curl -fsSLo "$XDG_CONFIG_HOME/composer/keys.dev.pub" https://composer.github.io/snapshots.pub \
+    && curl -fsSLo "$XDG_CONFIG_HOME/composer/keys.tags.pub" https://composer.github.io/releases.pub \
+    && chmod 644 "$XDG_CONFIG_HOME/composer/keys.dev.pub" "$XDG_CONFIG_HOME/composer/keys.tags.pub" \
+    # Install Xdebug and pcov PHP extensions
+    && install-php-extensions \
+        "xdebug-$XDEBUG_VERSION" \
+        "pcov-$PCOV_VERSION" \
+    && cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" \
+    # Cleanup
+    && apt-get autoremove --assume-yes \
+    && apt-get clean --assume-yes \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
+
+# Latest version of fixuid: https://github.com/boxboat/fixuid/releases/latest
+ARG FIXUID_VERSION=0.6.0
+
+ARG USER=code
+ARG GROUP=code
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN curl -fsSLo /tmp/fixuid.tar.gz "https://github.com/boxboat/fixuid/releases/download/v$FIXUID_VERSION/fixuid-${FIXUID_VERSION}-linux-${TARGETARCH}.tar.gz" \
+    && tar -xf /tmp/fixuid.tar.gz -C /usr/local/bin fixuid \
+    && chown root:root /usr/local/bin/fixuid \
+    && chmod 4755 /usr/local/bin/fixuid \
+    && rm /tmp/fixuid.tar.gz \
+    # Create user and group, and setup fixuid configuration
+    && existing_group="$(getent group "$USER_GID" | cut -d: -f1 || true)" \
+    && if [ -z "$existing_group" ]; then \
+           groupadd --gid "$USER_GID" "$GROUP"; \
+           existing_group="$GROUP"; \
+       fi \
+    && useradd --uid "$USER_UID" --gid "$USER_GID" --create-home "$USER" --shell /bin/bash \
+    && mkdir -p \
+        /etc/fixuid \
+        "/data" \
+        "/config" \
+        "/cache/npm" \
+    && chown -R "$USER_UID":"$USER_GID" \
+        "/data" \
+        "/config" \
+        "/cache" \
+    && cat <<EOF > /etc/fixuid/config.yml
+user: $USER
+group: $existing_group
+paths:
+  - /var/www
+  - /home/$USER
+  - /data
+  - /config
+  - /cache
+
+EOF
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+FROM node:24.16.0-trixie-slim AS node
+
+FROM builder AS builder_nodejs
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+ENV npm_config_cache="$XDG_CACHE_HOME/npm"
+
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN apt-get update \
+    && apt-get install --assume-yes --no-install-recommends \
+        gcc \
+        g++ \
+        make \
+    && ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
+    && corepack install --global npm@11.x yarn@4.x pnpm@10.x \
+    && corepack enable npm yarn pnpm \
+    # Cleanup
+    && apt-get autoremove --assume-yes \
+    && apt-get clean --assume-yes \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
