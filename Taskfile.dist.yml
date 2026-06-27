@@ -107,10 +107,11 @@ tasks:
         msg: TARGET needs to contain the Docker TARGET [runtime, builder, builder_nodejs]
     vars:
       VERSION: '{{.VERSION | default "latest"}}'
+      TARGET_PATH: '{{if ne .TARGET "runtime"}}/{{.TARGET}}{{end}}'
     cmds:
       - docker build
         --target {{.TARGET}}
-        --tag {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}:{{.TARGET}}-{{.VERSION}}
+        --tag {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}{{.TARGET_PATH}}:{{.VERSION}}
         --file {{.DOCKER_FILE_PATH}}
         .
     requires:
@@ -196,7 +197,7 @@ tasks:
         --interactive
         --tty
         --rm
-        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}:builder_nodejs-{{.VERSION | default "latest" }}
+        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder_nodejs:{{.VERSION | default "latest" }}
         bash
 
   shell:apache:
@@ -209,7 +210,7 @@ tasks:
         --interactive
         --tty
         --rm
-        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}:builder_nodejs-{{.VERSION | default "latest" }}
+        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder_nodejs:{{.VERSION | default "latest" }}
         bash
 
   shell:frankenphp:
@@ -222,5 +223,5 @@ tasks:
         --interactive
         --tty
         --rm
-        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}:builder_nodejs-{{.VERSION | default "latest" }}
+        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder_nodejs:{{.VERSION | default "latest" }}
         bash

@@ -40,19 +40,19 @@ There are multiple targets:
 Building `runtime`-target:
 
 ```
-docker build --tag ghcr.io/specsnl/php84:runtime-latest --file fpm/Dockerfile --target runtime .
+docker build --tag ghcr.io/specsnl/php84:latest --file fpm/Dockerfile --target runtime .
 ```
 
 Building `builder`-target:
 
 ```
-docker build --tag ghcr.io/specsnl/php84:builder-latest --file fpm/Dockerfile --target builder .
+docker build --tag ghcr.io/specsnl/php84/builder:latest --file fpm/Dockerfile --target builder .
 ```
 
 Building `builder_nodejs`-target:
 
 ```
-docker build --tag ghcr.io/specsnl/php84:builder_nodejs-latest --file fpm/Dockerfile --target builder_nodejs .
+docker build --tag ghcr.io/specsnl/php84/builder_nodejs:latest --file fpm/Dockerfile --target builder_nodejs .
 ```
 
 ## Task commands
