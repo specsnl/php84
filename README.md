@@ -1,23 +1,23 @@
 # php84
 
-[![Build Images](https://github.com/Ilyes512/php84/actions/workflows/main.yml/badge.svg)](https://github.com/Ilyes512/php84/actions/workflows/main.yml)
+[![Build Images](https://github.com/specsnl/php84/actions/workflows/main.yml/badge.svg)](https://github.com/specsnl/php84/actions/workflows/main.yml)
 
 A PHP 8.4 (FPM, Apache and FrankenPHP) based Docker base image.
 
 ## Pulling the images
 
 ```
-docker pull ghcr.io/ilyes512/php84:runtime-latest
-docker pull ghcr.io/ilyes512/php84:builder-latest
-docker pull ghcr.io/ilyes512/php84:builder_nodejs-latest
+docker pull ghcr.io/specsnl/php84:runtime-latest
+docker pull ghcr.io/specsnl/php84:builder-latest
+docker pull ghcr.io/specsnl/php84:builder_nodejs-latest
 
-docker pull ghcr.io/ilyes512/php84/apache:runtime-latest
-docker pull ghcr.io/ilyes512/php84/apache:builder-latest
-docker pull ghcr.io/ilyes512/php84/apache:builder_nodejs-latest
+docker pull ghcr.io/specsnl/php84/apache:runtime-latest
+docker pull ghcr.io/specsnl/php84/apache:builder-latest
+docker pull ghcr.io/specsnl/php84/apache:builder_nodejs-latest
 
-docker pull ghcr.io/ilyes512/php84/frankenphp:runtime-latest
-docker pull ghcr.io/ilyes512/php84/frankenphp:builder-latest
-docker pull ghcr.io/ilyes512/php84/frankenphp:builder_nodejs-latest
+docker pull ghcr.io/specsnl/php84/frankenphp:runtime-latest
+docker pull ghcr.io/specsnl/php84/frankenphp:builder-latest
+docker pull ghcr.io/specsnl/php84/frankenphp:builder_nodejs-latest
 ```
 
 The tag scheme: `{TARGET}-{VERSION}`
@@ -36,19 +36,19 @@ There are multiple targets:
 Building `runtime`-target:
 
 ```
-docker build --tag ghcr.io/ilyes512/php84:runtime-latest --file fpm/Dockerfile --target runtime .
+docker build --tag ghcr.io/specsnl/php84:runtime-latest --file fpm/Dockerfile --target runtime .
 ```
 
 Building `builder`-target:
 
 ```
-docker build --tag ghcr.io/ilyes512/php84:builder-latest --file fpm/Dockerfile --target builder .
+docker build --tag ghcr.io/specsnl/php84:builder-latest --file fpm/Dockerfile --target builder .
 ```
 
 Building `builder_nodejs`-target:
 
 ```
-docker build --tag ghcr.io/ilyes512/php84:builder_nodejs-latest --file fpm/Dockerfile --target builder_nodejs .
+docker build --tag ghcr.io/specsnl/php84:builder_nodejs-latest --file fpm/Dockerfile --target builder_nodejs .
 ```
 
 ## Task commands
