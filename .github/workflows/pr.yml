@@ -34,7 +34,7 @@ jobs:
 
   build:
     needs: check
-    uses: specsnl/github-actions/.github/workflows/build-php.yml@2.1.0
+    uses: specsnl/github-actions/.github/workflows/build-php.yml@2.2.0
     strategy:
       fail-fast: false
       matrix:
@@ -57,7 +57,7 @@ jobs:
       dockerfile: ${{ matrix.docker.dockerfile }}
 
   merge:
-    uses: specsnl/github-actions/.github/workflows/merge-php.yml@2.1.0
+    uses: specsnl/github-actions/.github/workflows/merge-php.yml@2.2.0
     needs: build
     strategy:
       matrix:
