@@ -2,7 +2,7 @@
 # check=error=true
 
 # Latest version of php-extension-installer: https://hub.docker.com/r/mlocati/php-extension-installer/tags
-FROM mlocati/php-extension-installer:2.11.12 AS php_extension_installer
+FROM mlocati/php-extension-installer:2.11.15 AS php_extension_installer
 
 # Latest version of PHP base image: https://hub.docker.com/_/php/tags
 FROM php:8.4.25-fpm-trixie AS runtime
