@@ -4,9 +4,9 @@ vars:
   DOCKER_REPO: ghcr.io
   DOCKER_OWNER: specsnl
   # Latatest version of Hadolint: https://hub.docker.com/r/hadolint/hadolint/tags or https://github.com/hadolint/hadolint/releases
-  HADOLINT_TAG_VERSION: v2.14.0
+  HADOLINT_TAG_VERSION: v2.15.1
   # Latest version of gomplate: https://hub.docker.com/r/hairyhenderson/gomplate/tags or https://github.com/hairyhenderson/gomplate/releases
-  GOMPLATE_TAG_VERSION: v5.1.0
+  GOMPLATE_TAG_VERSION: v5.2.0
 
 # env:
 #   BUILDKIT_PROGRESS: plain
