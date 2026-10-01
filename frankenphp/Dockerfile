@@ -2,7 +2,7 @@
 # check=error=true
 
 # Latest version of php-extension-installer: https://hub.docker.com/r/mlocati/php-extension-installer/tags
-FROM mlocati/php-extension-installer:2.11.27 AS php_extension_installer
+FROM mlocati/php-extension-installer:2.12.0 AS php_extension_installer
 
 # Latest version of FrankenPHP base image: https://hub.docker.com/r/dunglas/frankenphp/tags or https://github.com/php/frankenphp/releases
 FROM dunglas/frankenphp:1.12.7-php8.4.26-trixie AS runtime
