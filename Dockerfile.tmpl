@@ -70,6 +70,7 @@ COPY files/general /
 {{ if .is_frankenphp -}}
 COPY files/frankenphp /
 {{ end }}
+# Latest version of Composer: https://hub.docker.com/r/composer/composer/tags
 FROM {{ getenv "COMPOSER_IMAGE" }} AS composer
 
 FROM runtime AS builder

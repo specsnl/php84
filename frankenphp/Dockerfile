@@ -69,6 +69,7 @@ RUN --mount=type=bind,from=php_extension_installer,source=/usr/bin/install-php-e
 COPY files/general /
 COPY files/frankenphp /
 
+# Latest version of Composer: https://hub.docker.com/r/composer/composer/tags
 FROM composer/composer:2.10.3-bin AS composer
 
 FROM runtime AS builder
