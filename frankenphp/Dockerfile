@@ -132,8 +132,6 @@ RUN curl -fsSLo /tmp/fixuid.tar.gz "https://github.com/boxboat/fixuid/releases/d
     && useradd --uid "$USER_UID" --gid "$USER_GID" --create-home "$USER" --shell /bin/bash \
     && mkdir -p \
         /etc/fixuid \
-        "$XDG_DATA_HOME" \
-        "$XDG_CONFIG_HOME" \
         "$XDG_CACHE_HOME/npm" \
         "$XDG_CACHE_HOME/node" \
     && chown -R "$USER_UID":"$USER_GID" \
