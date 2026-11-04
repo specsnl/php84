@@ -75,7 +75,7 @@ COPY files/frankenphp /
 FROM composer/composer:2.11.1-bin AS composer
 
 # Latest version of node: https://hub.docker.com/_/node/tags
-FROM node:24.21.0-trixie-slim AS node
+FROM node:26.13.0-trixie-slim AS node
 
 FROM runtime AS builder
 
@@ -168,7 +168,14 @@ ENV PNPM_CONFIG_STORE_DIR="$XDG_DATA_HOME/pnpm/store"
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-RUN ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
+# Latest version of corepack: https://www.npmjs.com/package/corepack
+ARG COREPACK_VERSION=0.36.0
+
+# Node.js 25+ no longer bundles corepack. npm's bin links are not copied from the node stage, and its cache goes to /tmp
+# so no root-owned files end up in npm_config_cache.
+RUN node /usr/local/lib/node_modules/npm/bin/npm-cli.js install --global \
+        --cache /tmp/npm-cache --no-update-notifier --no-audit --no-fund \
+        "corepack@$COREPACK_VERSION" \
     && corepack install --global npm@12.x yarn@4.x pnpm@12.x \
     && corepack enable npm yarn pnpm \
     # pnpm downloads its platform-specific binary on first run
