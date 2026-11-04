@@ -175,6 +175,8 @@ RUN apt-get update \
     && ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
     && corepack install --global npm@12.x yarn@4.x pnpm@12.x \
     && corepack enable npm yarn pnpm \
+    # pnpm downloads its platform-specific binary on first run
+    && pnpm --version \
     # Cleanup
     && apt-get autoremove --assume-yes \
     && apt-get clean --assume-yes \
