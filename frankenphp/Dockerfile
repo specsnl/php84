@@ -70,7 +70,7 @@ COPY files/general /
 COPY files/frankenphp /
 
 # Latest version of Composer: https://hub.docker.com/r/composer/composer/tags
-FROM composer/composer:2.10.3-bin AS composer
+FROM composer/composer:2.11.1-bin AS composer
 
 FROM runtime AS builder
 
