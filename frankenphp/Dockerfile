@@ -173,7 +173,7 @@ RUN apt-get update \
         g++ \
         make \
     && ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
-    && corepack install --global npm@11.x yarn@4.x pnpm@10.x \
+    && corepack install --global npm@12.x yarn@4.x pnpm@12.x \
     && corepack enable npm yarn pnpm \
     # Cleanup
     && apt-get autoremove --assume-yes \
