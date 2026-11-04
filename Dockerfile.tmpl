@@ -137,6 +137,9 @@ RUN curl -fsSLo /tmp/fixuid.tar.gz "https://github.com/boxboat/fixuid/releases/d
         /etc/fixuid \
         "$XDG_CACHE_HOME/npm" \
         "$XDG_CACHE_HOME/node" \
+        "$XDG_CACHE_HOME/yarn" \
+        "$XDG_DATA_HOME/pnpm/store" \
+        "$XDG_DATA_HOME/yarn/berry" \
     && chown -R "$USER_UID":"$USER_GID" \
         "$XDG_DATA_HOME" \
         "$XDG_CONFIG_HOME" \
@@ -164,6 +167,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 ENV npm_config_cache="$XDG_CACHE_HOME/npm"
+ENV PNPM_CONFIG_STORE_DIR="$XDG_DATA_HOME/pnpm/store"
 
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
