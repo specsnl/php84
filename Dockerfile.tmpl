@@ -10,13 +10,13 @@ FROM {{ getenv "BASE_IMAGE" }} AS runtime
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG XDG_CONFIG_HOME=/config
-ENV XDG_CONFIG_HOME=$XDG_CONFIG_HOME
+ENV XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
 
 ARG XDG_DATA_HOME=/data
-ENV XDG_DATA_HOME=$XDG_DATA_HOME
+ENV XDG_DATA_HOME="$XDG_DATA_HOME"
 
 ARG XDG_CACHE_HOME=/cache
-ENV XDG_CACHE_HOME=$XDG_CACHE_HOME
+ENV XDG_CACHE_HOME="$XDG_CACHE_HOME"
 
 # Latest version of event-extension: https://pecl.php.net/package/event
 ARG PHP_EVENT_VERSION=3.1.6
@@ -56,9 +56,9 @@ RUN --mount=type=bind,from=php_extension_installer,source=/usr/bin/install-php-e
         "amqp-$PHP_AMQP_VERSION" \
     && cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && mkdir -p \
-        $XDG_CONFIG_HOME \
-        $XDG_DATA_HOME \
-        $XDG_CACHE_HOME \
+        "$XDG_CONFIG_HOME" \
+        "$XDG_DATA_HOME" \
+        "$XDG_CACHE_HOME" \
     && rm -rf /var/www/* \
     # Cleanup
     && apt-get autoremove --assume-yes \
@@ -146,7 +146,7 @@ user: $USER
 group: $existing_group
 paths:
   - /var/www
-  - /home/$USER
+  - "/home/$USER"
   - /data
   - /config
   - /cache
