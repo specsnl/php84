@@ -176,6 +176,7 @@ RUN apt-get update \
     && corepack enable npm yarn pnpm \
     # pnpm downloads its platform-specific binary on first run
     && pnpm --version \
+    && chown -R --reference="$XDG_CACHE_HOME" "$XDG_CACHE_HOME/node" \
     # Cleanup
     && apt-get autoremove --assume-yes \
     && apt-get clean --assume-yes \
