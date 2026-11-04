@@ -46,11 +46,6 @@ tasks:
           TARGET: builder
           DOCKER_IMAGE_NAME: '{{.DOCKER_IMAGE_NAME}}'
           DOCKER_FILE_PATH: '{{.DOCKER_FILE_PATH}}'
-      - task: build:target
-        vars:
-          TARGET: builder_nodejs
-          DOCKER_IMAGE_NAME: '{{.DOCKER_IMAGE_NAME}}'
-          DOCKER_FILE_PATH: '{{.DOCKER_FILE_PATH}}'
 
   build:apache:
     desc: Build all PHP Docker image targets of the Apache variant
@@ -67,11 +62,6 @@ tasks:
       - task: build:target
         vars:
           TARGET: builder
-          DOCKER_IMAGE_NAME: '{{.DOCKER_IMAGE_NAME}}'
-          DOCKER_FILE_PATH: '{{.DOCKER_FILE_PATH}}'
-      - task: build:target
-        vars:
-          TARGET: builder_nodejs
           DOCKER_IMAGE_NAME: '{{.DOCKER_IMAGE_NAME}}'
           DOCKER_FILE_PATH: '{{.DOCKER_FILE_PATH}}'
 
@@ -92,19 +82,13 @@ tasks:
           TARGET: builder
           DOCKER_IMAGE_NAME: '{{.DOCKER_IMAGE_NAME}}'
           DOCKER_FILE_PATH: '{{.DOCKER_FILE_PATH}}'
-      - task: build:target
-        vars:
-          TARGET: builder_nodejs
-          DOCKER_IMAGE_NAME: '{{.DOCKER_IMAGE_NAME}}'
-          DOCKER_FILE_PATH: '{{.DOCKER_FILE_PATH}}'
 
   build:target:
     preconditions:
       - sh: >
           test '{{.TARGET}}' = 'runtime'
           -o '{{.TARGET}}' = 'builder'
-          -o '{{.TARGET}}' = 'builder_nodejs'
-        msg: TARGET needs to contain the Docker TARGET [runtime, builder, builder_nodejs]
+        msg: TARGET needs to contain the Docker TARGET [runtime, builder]
     vars:
       VERSION: '{{.VERSION | default "latest"}}'
       TARGET_PATH: '{{if ne .TARGET "runtime"}}/{{.TARGET}}{{end}}'
@@ -206,7 +190,7 @@ tasks:
         --interactive
         --tty
         --rm
-        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder_nodejs:{{.VERSION | default "latest" }}
+        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder:{{.VERSION | default "latest" }}
         bash
 
   shell:apache:
@@ -219,7 +203,7 @@ tasks:
         --interactive
         --tty
         --rm
-        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder_nodejs:{{.VERSION | default "latest" }}
+        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder:{{.VERSION | default "latest" }}
         bash
 
   shell:frankenphp:
@@ -232,5 +216,5 @@ tasks:
         --interactive
         --tty
         --rm
-        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder_nodejs:{{.VERSION | default "latest" }}
+        {{.DOCKER_REPO}}/{{.DOCKER_OWNER}}/{{.DOCKER_IMAGE_NAME}}/builder:{{.VERSION | default "latest" }}
         bash
