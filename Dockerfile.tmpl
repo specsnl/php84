@@ -88,6 +88,16 @@ ARG XDEBUG_VERSION=3.5.3
 # Latest version of pcov: https://pecl.php.net/package/pcov
 ARG PCOV_VERSION=1.0.12
 
+# Latest version of fixuid: https://github.com/boxboat/fixuid/releases/latest
+ARG FIXUID_VERSION=0.6.0
+
+ARG USER=code
+ARG GROUP=code
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 RUN --mount=type=bind,from=php_extension_installer,source=/usr/bin/install-php-extensions,target=/usr/local/bin/install-php-extensions \
     apt-get update \
     && apt-get install --assume-yes --no-install-recommends \
@@ -111,23 +121,8 @@ RUN --mount=type=bind,from=php_extension_installer,source=/usr/bin/install-php-e
         "xdebug-$XDEBUG_VERSION" \
         "pcov-$PCOV_VERSION" \
     && cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" \
-    # Cleanup
-    && apt-get autoremove --assume-yes \
-    && apt-get clean --assume-yes \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /tmp/*
-
-# Latest version of fixuid: https://github.com/boxboat/fixuid/releases/latest
-ARG FIXUID_VERSION=0.6.0
-
-ARG USER=code
-ARG GROUP=code
-ARG USER_UID=1000
-ARG USER_GID=1000
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-RUN curl -fsSLo /tmp/fixuid.tar.gz "https://github.com/boxboat/fixuid/releases/download/v$FIXUID_VERSION/fixuid-${FIXUID_VERSION}-linux-${TARGETARCH}.tar.gz" \
+    # Install fixuid
+    && curl -fsSLo /tmp/fixuid.tar.gz "https://github.com/boxboat/fixuid/releases/download/v$FIXUID_VERSION/fixuid-${FIXUID_VERSION}-linux-${TARGETARCH}.tar.gz" \
     && tar -xf /tmp/fixuid.tar.gz -C /usr/local/bin fixuid \
     && chown root:root /usr/local/bin/fixuid \
     && chmod 4755 /usr/local/bin/fixuid \
@@ -150,6 +145,11 @@ RUN curl -fsSLo /tmp/fixuid.tar.gz "https://github.com/boxboat/fixuid/releases/d
         "$XDG_DATA_HOME" \
         "$XDG_CONFIG_HOME" \
         "$XDG_CACHE_HOME" \
+    # Cleanup
+    && apt-get autoremove --assume-yes \
+    && apt-get clean --assume-yes \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
     && cat <<EOF > /etc/fixuid/config.yml
 user: $USER
 group: $existing_group
@@ -161,8 +161,6 @@ paths:
   - "$XDG_CACHE_HOME"
 
 EOF
-
-COPY --from=composer /composer /usr/local/bin/composer
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 ENV npm_config_cache="$XDG_CACHE_HOME/npm"
@@ -179,3 +177,5 @@ RUN ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack 
     && chown -R --reference="$XDG_CACHE_HOME" "$XDG_CACHE_HOME/node" \
     # Cleanup
     && rm -rf /tmp/*
+
+COPY --from=composer /composer /usr/local/bin/composer
