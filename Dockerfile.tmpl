@@ -75,6 +75,9 @@ COPY files/frankenphp /
 # Latest version of Composer: https://hub.docker.com/r/composer/composer/tags
 FROM {{ getenv "COMPOSER_IMAGE" }} AS composer
 
+# Latest version of node: https://hub.docker.com/_/node/tags
+FROM {{ getenv "NODE_IMAGE" }} AS node
+
 FROM runtime AS builder
 
 ARG TARGETARCH
@@ -95,6 +98,9 @@ RUN --mount=type=bind,from=php_extension_installer,source=/usr/bin/install-php-e
         p7zip-full \
         unzip \
         curl \
+        gcc \
+        g++ \
+        make \
     # Download Composer keys
     && mkdir -p "$XDG_CONFIG_HOME/composer" \
     && curl -fsSLo "$XDG_CONFIG_HOME/composer/keys.dev.pub" https://composer.github.io/snapshots.pub \
@@ -158,13 +164,6 @@ EOF
 
 COPY --from=composer /composer /usr/local/bin/composer
 
-# Latest version of node: https://hub.docker.com/_/node/tags
-FROM {{ getenv "NODE_IMAGE" }} AS node
-
-FROM builder AS builder_nodejs
-
-ARG DEBIAN_FRONTEND=noninteractive
-
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 ENV npm_config_cache="$XDG_CACHE_HOME/npm"
 ENV PNPM_CONFIG_STORE_DIR="$XDG_DATA_HOME/pnpm/store"
@@ -172,19 +171,11 @@ ENV PNPM_CONFIG_STORE_DIR="$XDG_DATA_HOME/pnpm/store"
 COPY --from=node /usr/local/bin/node /usr/local/bin/node
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-RUN apt-get update \
-    && apt-get install --assume-yes --no-install-recommends \
-        gcc \
-        g++ \
-        make \
-    && ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
+RUN ln -s ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
     && corepack install --global npm@12.x yarn@4.x pnpm@12.x \
     && corepack enable npm yarn pnpm \
     # pnpm downloads its platform-specific binary on first run
     && pnpm --version \
     && chown -R --reference="$XDG_CACHE_HOME" "$XDG_CACHE_HOME/node" \
     # Cleanup
-    && apt-get autoremove --assume-yes \
-    && apt-get clean --assume-yes \
-    && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
