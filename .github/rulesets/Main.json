@@ -53,10 +53,6 @@
                         "integration_id": 15368
                     },
                     {
-                        "context": "merge (ghcr.io/specsnl/php84) / builder_nodejs / Merge Images (builder_nodejs)",
-                        "integration_id": 15368
-                    },
-                    {
                         "context": "merge (ghcr.io/specsnl/php84/apache) / runtime / Merge Images (runtime)",
                         "integration_id": 15368
                     },
@@ -65,19 +61,11 @@
                         "integration_id": 15368
                     },
                     {
-                        "context": "merge (ghcr.io/specsnl/php84/apache) / builder_nodejs / Merge Images (builder_nodejs)",
-                        "integration_id": 15368
-                    },
-                    {
                         "context": "merge (ghcr.io/specsnl/php84/frankenphp) / runtime / Merge Images (runtime)",
                         "integration_id": 15368
                     },
                     {
                         "context": "merge (ghcr.io/specsnl/php84/frankenphp) / builder / Merge Images (builder)",
-                        "integration_id": 15368
-                    },
-                    {
-                        "context": "merge (ghcr.io/specsnl/php84/frankenphp) / builder_nodejs / Merge Images (builder_nodejs)",
                         "integration_id": 15368
                     }
                 ]
