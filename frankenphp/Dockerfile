@@ -9,6 +9,8 @@ FROM dunglas/frankenphp:1.13.4-php8.4.27-trixie AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ENV LANG=C.UTF-8
+
 ARG XDG_CONFIG_HOME=/config
 ENV XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
 

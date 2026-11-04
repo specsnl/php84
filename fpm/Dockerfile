@@ -9,6 +9,8 @@ FROM php:8.4.27-fpm-trixie AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ENV LANG=C.UTF-8
+
 ARG XDG_CONFIG_HOME=/config
 ENV XDG_CONFIG_HOME="$XDG_CONFIG_HOME"
 
