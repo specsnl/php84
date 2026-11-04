@@ -153,7 +153,7 @@ paths:
 
 EOF
 
-COPY --from=composer /composer /usr/bin/composer
+COPY --from=composer /composer /usr/local/bin/composer
 
 # Latest version of node: https://hub.docker.com/_/node/tags
 FROM {{ getenv "NODE_IMAGE" }} AS node
