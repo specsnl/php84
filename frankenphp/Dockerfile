@@ -5,7 +5,7 @@
 FROM mlocati/php-extension-installer:2.13.2 AS php_extension_installer
 
 # Latest version of FrankenPHP base image: https://hub.docker.com/r/dunglas/frankenphp/tags or https://github.com/php/frankenphp/releases
-FROM dunglas/frankenphp:1.13.4-php8.4.27-trixie AS runtime
+FROM dunglas/frankenphp:1.13.5-php8.4.27-trixie AS runtime
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -21,7 +21,7 @@ ARG XDG_CACHE_HOME=/cache
 ENV XDG_CACHE_HOME="$XDG_CACHE_HOME"
 
 # Latest version of event-extension: https://pecl.php.net/package/event
-ARG PHP_EVENT_VERSION=3.1.6
+ARG PHP_EVENT_VERSION=3.2.0
 # Latest version of igbinary-extension: https://pecl.php.net/package/igbinary
 ARG PHP_IGBINARY_VERSION=3.2.17RC1
 # Latest version of redis-extension: https://pecl.php.net/package/redis
@@ -72,10 +72,10 @@ COPY files/general /
 COPY files/frankenphp /
 
 # Latest version of Composer: https://hub.docker.com/r/composer/composer/tags
-FROM composer/composer:2.11.1-bin AS composer
+FROM composer/composer:2.11.2-bin AS composer
 
 # Latest version of node: https://hub.docker.com/_/node/tags
-FROM node:26.13.0-trixie-slim AS node
+FROM node:26.13.1-trixie-slim AS node
 
 FROM runtime AS builder
 
