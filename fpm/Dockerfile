@@ -67,7 +67,7 @@ RUN --mount=type=bind,from=php_extension_installer,source=/usr/bin/install-php-e
 COPY files/general /
 
 # Latest version of Composer: https://hub.docker.com/r/composer/composer/tags
-FROM composer/composer:2.11.1-bin AS composer
+FROM composer/composer:2.11.2-bin AS composer
 
 # Latest version of node: https://hub.docker.com/_/node/tags
 FROM node:26.13.0-trixie-slim AS node
