@@ -21,7 +21,7 @@ ARG XDG_CACHE_HOME=/cache
 ENV XDG_CACHE_HOME="$XDG_CACHE_HOME"
 
 # Latest version of event-extension: https://pecl.php.net/package/event
-ARG PHP_EVENT_VERSION=3.1.6
+ARG PHP_EVENT_VERSION=3.2.0
 # Latest version of igbinary-extension: https://pecl.php.net/package/igbinary
 ARG PHP_IGBINARY_VERSION=3.2.17RC1
 # Latest version of redis-extension: https://pecl.php.net/package/redis
