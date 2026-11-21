@@ -26,9 +26,8 @@ The image name scheme: `ghcr.io/specsnl/php84[/{VARIANT}][/{TARGET}]:{VERSION}`
 - **{TARGET}**: omitted for `runtime`, otherwise `builder`
 - **{VERSION}**: `latest`, a release tag (i.e. `1.5.5`), `main` or `pr-<number>`
 
-The `builder` image is also published under its old names, `builder_nodejs` and `node`, from the time Node.js had its own
-target. These names are deprecated and will be removed ([specsnl/github-actions#76](https://github.com/specsnl/github-actions/issues/76));
-use `builder` instead.
+The `builder` image used to be published under the old names `builder_nodejs` and `node` as well, from the time
+Node.js had its own target. Those names no longer receive updates; use `builder` instead.
 
 ## Building the docker image(s)
 
